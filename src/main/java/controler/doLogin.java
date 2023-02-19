@@ -13,6 +13,7 @@ import java.io.IOException;
 public class doLogin extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("do Login");
         DAOCustomer daoCustomer = new DAOCustomer();
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -20,13 +21,12 @@ public class doLogin extends HttpServlet {
         HttpSession session = request.getSession();
         session.setAttribute("name",username);
 
-        if(daoCustomer.selectByUser(username)!=null){
-            if(daoCustomer.selectByUser(username).getName() == username){
-                if(daoCustomer.selectByUser(username).getPassWord() == password){
-                    RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
-                    rd.forward(request,response);
-                }
-            }
+        System.out.print(daoCustomer.selectByUser(username));
+
+        if(daoCustomer.selectByUser(username)!=null&&daoCustomer.selectByUser(username).getPassWord().equals(password)){
+            System.out.println("trong if");
+            RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
+            rd.forward(request,response);
         }
     }
 }

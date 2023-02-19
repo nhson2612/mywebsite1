@@ -53,18 +53,10 @@ public class DAOCustomer implements  DAOInterface<Customer>{
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url,username,password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
+            String statementString = "SELECT * FROM mywebsite WHERE id = " + t.getId();
             statement = connection.createStatement();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        String statementString = "SELECT * FROM mywebsite WHERE id = " + t.getId();
-        try {
             ResultSet rs = statement.executeQuery(statementString);
+
             int id = rs.getInt("id");
             String name = rs.getString("name");
             long numberPhone = rs.getLong("numberphone");
@@ -74,8 +66,8 @@ public class DAOCustomer implements  DAOInterface<Customer>{
             String passWord = rs.getString("password");
             Date dateOfBirth = rs.getDate("dateofbirth");
             customer = new Customer(name,numberPhone,dateOfBirth,sex,address,email,passWord);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return customer;
     }
@@ -94,9 +86,9 @@ public class DAOCustomer implements  DAOInterface<Customer>{
         }
 
         if(seachUser(t.getName())){
-            return 0;
+            return 1;
         } else if (searchEmail(t.getEmail())) {
-            return 0;
+            return 1;
         }else {
             try {
                 Statement statement = connection.createStatement();
@@ -113,12 +105,13 @@ public class DAOCustomer implements  DAOInterface<Customer>{
                         "  VALUES( \"" + name + "\" , " +
                         numberPhone + " , " + sex + " , \"" + address + "\" , \"" +
                         email + "\" , \"" + password + "\" , \"" + year + "/" + date + "/" + month +" \")";
+                System.out.println(statementString);
                 statement.executeUpdate(statementString);
             }catch (SQLException e){
                 e.printStackTrace();
             }
         }
-        return 2;
+        return 0;
     }
 
     @Override
@@ -145,40 +138,31 @@ public class DAOCustomer implements  DAOInterface<Customer>{
         String url = "jdbc:mySQL://localhost:3306/mywebsite";
         String username = "root";
         String password = "";
+        int count = 0;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url,username,password);
+            Statement statement = null;
+            statement = connection.createStatement();
+            String statementString = "SELECT * FROM mywebsite.customer WHERE name = \"" + name +" \" ";
+            ResultSet rs = null;
+            rs = statement.executeQuery(statementString);
+            while(true){
+                try {
+                    if (!rs.next()) break;
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                count++;
+            }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        String statementString = "SELECT * FROM mywebsite.customer WHERE name = \"" + name +" \" ";
-        ResultSet rs = null;
-        try {
-            rs = statement.executeQuery(statementString);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        int count = 0;
-        while(true){
-            try {
-                if (!rs.next()) break;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            count++;
         }
         if(count>0){
             return true;
         }else{
             return false;
-        }
+        } // neu ton tai 1 user name roi -> return true
 
     }
 
@@ -187,81 +171,65 @@ public class DAOCustomer implements  DAOInterface<Customer>{
         String url = "jdbc:mySQL://localhost:3306/mywebsite";
         String username = "root";
         String password = "";
+        int count = 0;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url,username,password);
+            Statement statement = null;
+            statement = connection.createStatement();
+            String statementString = "SELECT * FROM mywebsite.customer WHERE email = \" " + email + " \"";
+            ResultSet rs = null;
+            rs = statement.executeQuery(statementString);
+            while(true){
+                try {
+                    if (!rs.next()) break;
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                count++;
+            }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        String statementString = "SELECT * FROM mywebsite.customer WHERE email = \" " + email + " \"";
-        ResultSet rs = null;
-        try {
-            rs = statement.executeQuery(statementString);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        int count = 0;
-        while(true){
-            try {
-                if (!rs.next()) break;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            count++;
         }
         if(count>0){
             return true;
         }else{
             return false;
-        }
+        } // ton tai 1 email -> return true
     }
 
     public Customer selectByUser(String name){
         String url = "jdbc:mySQL://localhost:3306/mywebsite";
         String username = "root";
         String password = "";
+        Customer customer = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url,username,password);
+            Statement statement = null;
+            statement = connection.createStatement();
+            String statementString = "SELECT * FROM mywebsite.customer WHERE name = \"" + name + " \"";
+            ResultSet rs = statement.executeQuery(statementString);
+            while(rs.next()){
+                String uname = rs.getString("name");
+                long numberPhone = rs.getLong("numberPhone");
+                boolean sex;
+                if(rs.getInt("sex")==1){
+                    sex = true;
+                }else {
+                    sex= false;
+                }
+                String address = rs.getString("address");
+                String email = rs.getString("email");
+                String pass = rs.getString("password");
+                Date dateOfBirth = rs.getDate("dateOfBirth");
+                System.out.println(uname);
+                System.out.println(pass);
+                customer = new Customer(uname,numberPhone,dateOfBirth,sex,address,email,pass);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        String statementString = "SELECT * FROM mywebsite.customer WHERE name = \"" + name + " \"";
-        ResultSet rs = null;
-        try {
-            rs = statement.executeQuery(statementString);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        Customer customer = null;
-        int count = 0;
-        while(true){
-            try {
-                if (!rs.next()) break;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            count++;
-             customer = (Customer) rs;
-        }
-        if(count==0){
-            return null;
-        }else{
-            return customer;
-        }
+        return customer;
     }
 }

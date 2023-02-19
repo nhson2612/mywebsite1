@@ -46,7 +46,7 @@ public class doRegister extends HttpServlet {
                 rd.forward(request,response);
                 System.out.println("Email da duoc dang ki");
             }else {
-                Customer customer = new Customer(name,Long.valueOf(numberPhone), Date.valueOf(dateOfBirth),sex,address,email,passWord);
+                Customer customer = new Customer(userName,Long.valueOf(numberPhone), Date.valueOf(dateOfBirth),sex,address,email,passWord);
                 daoCustomer.insert(customer);
                 RequestDispatcher rd = request.getRequestDispatcher("/success.jsp");
                 rd.forward(request,response);

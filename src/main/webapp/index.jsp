@@ -12,7 +12,7 @@
 <body>
 <%
     HttpSession session1 = request.getSession();
-    String heyName = (session1.getAttribute("name")==null) ? "Welcome to SON's Website" : ("Hey" + session1.getAttribute("name"));
+    String heyName = (session1.getAttribute("name")==null) ? "Welcome to SON's Website" : ("Hey " + session1.getAttribute("name"));
 %>
 <!-- navbar -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
