@@ -52,31 +52,31 @@ public class Customer {
         this.passWord = passWord;
     }
 
-    public String getName(String name){
+    public String getName(){
         return this.name;
     }
 
-    public long getNumberPhone(long numberPhone){
+    public long getNumberPhone(){
         return this.numberPhone;
     }
 
-    public Date getDateOfBirth(Date dateOfBirth){
+    public Date getDateOfBirth(){
         return this.dateOfBirth;
     }
 
-    public boolean getSex(boolean sex){
+    public boolean getSex(){
         return this.sex;
     }
 
-    public String getAddress(String address){
+    public String getAddress(){
         return this.address;
     }
 
-    public String getEmail(String email){
+    public String getEmail(){
         return this.email;
     }
 
-    public String getPassWord(String passWord){
+    public String getPassWord(){
         return this.passWord;
     }
 

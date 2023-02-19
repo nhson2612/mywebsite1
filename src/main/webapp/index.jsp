@@ -10,6 +10,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 </head>
 <body>
+<%
+    HttpSession session1 = request.getSession();
+    String heyName = (session1.getAttribute("name")==null) ? "Welcome to SON's Website" : ("Hey" + session1.getAttribute("name"));
+%>
 <!-- navbar -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -41,8 +45,8 @@
                 </li>
             </ul>
             <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" value="<%=heyName%>">
+                <button class="btn btn-outline-success" type="submit"></button>
                 <a href="register.jsp"><button type="button" class="btn btn-outline-primary">Register</button></a>
                 <a href="login.jsp"><button type="button" class="btn btn-outline-success">Login</button></a>
             </form>

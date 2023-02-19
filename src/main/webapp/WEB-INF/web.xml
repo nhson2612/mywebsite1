@@ -11,4 +11,12 @@
         <servlet-name>doRegister</servlet-name>
         <url-pattern>/do-Register</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>doLogin</servlet-name>
+        <servlet-class>controler.doLogin</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>doLogin</servlet-name>
+        <url-pattern>/do-Login</url-pattern>
+    </servlet-mapping>
 </web-app>

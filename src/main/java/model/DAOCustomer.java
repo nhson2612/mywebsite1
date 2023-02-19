@@ -5,13 +5,12 @@ import java.util.ArrayList;
 
 public class DAOCustomer implements  DAOInterface<Customer>{
 
-    private static Connection connection = null;
-    private static DAOCustomer dAOCustomer = null;
+    private Connection connection = null;
 
-    private DAOCustomer(){}
-    public static DAOCustomer getInstance(){
-        if(dAOCustomer==null){
-            dAOCustomer = new DAOCustomer();
+    @Override
+    public ArrayList<Customer> selectAll() {
+        ArrayList<Customer> customers = new ArrayList<Customer>();
+        try {
             String url = "jdbc:mySQL://localhost:3306/mywebsite";
             String username = "root";
             String password = "";
@@ -21,15 +20,7 @@ public class DAOCustomer implements  DAOInterface<Customer>{
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        return dAOCustomer;
-    }
-
-    @Override
-    public ArrayList<Customer> selectAll() {
-        ArrayList<Customer> customers = new ArrayList<Customer>();
-        try {
-            Statement statement = connection.createStatement();
+            Statement statement =  connection.createStatement();
             String statementString = "SELECT * FROM mywebsite.customer";
             ResultSet rs = statement.executeQuery(statementString);
             while(rs.next()){
@@ -41,13 +32,11 @@ public class DAOCustomer implements  DAOInterface<Customer>{
                 String email = rs.getString("email");
                 String passWord = rs.getString("password");
                 Date dateOfBirth = rs.getDate("dateofbirth");
-
                 customers.add(new Customer(name,numberPhone,dateOfBirth,sex,address,email,passWord));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return customers;
     }
 
@@ -55,6 +44,16 @@ public class DAOCustomer implements  DAOInterface<Customer>{
     public Customer selectById(Customer t) {
         Customer customer  = null;
         Statement statement = null;
+        String url = "jdbc:mySQL://localhost:3306/mywebsite";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(url,username,password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         try {
             statement = connection.createStatement();
         } catch (SQLException e) {
@@ -80,7 +79,43 @@ public class DAOCustomer implements  DAOInterface<Customer>{
 
     @Override
     public int insert(Customer t) {
-        return 0;
+
+        String url = "jdbc:mySQL://localhost:3306/mywebsite";
+        String username = "root";
+        String passworddb = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(url,username,passworddb);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(seachUser(t.getName())){
+            return 0;
+        } else if (searchEmail(t.getEmail())) {
+            return 0;
+        }else {
+            try {
+                Statement statement = connection.createStatement();
+                String name = t.getName();
+                long numberPhone = t.getNumberPhone();
+                int date = t.getDateOfBirth().getDate();
+                int month = t.getDateOfBirth().getMonth();
+                int year = t.getDateOfBirth().getYear();
+                String address = t.getAddress();
+                String email = t.getEmail();
+                String password = t.getPassWord();
+                int sex = t.getSex() ? 0 : 1;
+                String statementString = "INSERT  INTO mywebsite.customer(name,numberPhone,sex,address,email,password,dateOfBirth) " +
+                        "  VALUES( \"" + name + "\" , " +
+                        numberPhone + " , " + sex + " , \"" + address + "\" , \"" +
+                        email + "\" , \"" + password + "\" , " + date + "/" + month +"/" + year +")";
+                statement.executeUpdate(statementString);
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return 2;
     }
 
     @Override
@@ -104,6 +139,16 @@ public class DAOCustomer implements  DAOInterface<Customer>{
     }
 
     public boolean seachUser(String name){
+        String url = "jdbc:mySQL://localhost:3306/mywebsite";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(url,username,password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Statement statement = null;
         try {
             statement = connection.createStatement();
@@ -131,9 +176,21 @@ public class DAOCustomer implements  DAOInterface<Customer>{
         }else{
             return false;
         }
+
     }
 
     public boolean searchEmail(String email){
+
+        String url = "jdbc:mySQL://localhost:3306/mywebsite";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(url,username,password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Statement statement = null;
         try {
             statement = connection.createStatement();
@@ -160,6 +217,48 @@ public class DAOCustomer implements  DAOInterface<Customer>{
             return true;
         }else{
             return false;
+        }
+    }
+
+    public Customer selectByUser(String name){
+        String url = "jdbc:mySQL://localhost:3306/mywebsite";
+        String username = "root";
+        String password = "";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(url,username,password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        String statementString = "SELECT * FROM mywebsite.customer WHERE name = \"" + name + " \"";
+        ResultSet rs = null;
+        try {
+            rs = statement.executeQuery(statementString);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        Customer customer = null;
+        int count = 0;
+        while(true){
+            try {
+                if (!rs.next()) break;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            count++;
+             customer = (Customer) rs;
+        }
+        if(count==0){
+            return null;
+        }else{
+            return customer;
         }
     }
 }
