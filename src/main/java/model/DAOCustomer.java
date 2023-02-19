@@ -1,9 +1,12 @@
 package model;
 
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class DAOCustomer implements  DAOInterface<Customer>{
+
 
     private Connection connection = null;
 
@@ -100,8 +103,8 @@ public class DAOCustomer implements  DAOInterface<Customer>{
                 String name = t.getName();
                 long numberPhone = t.getNumberPhone();
                 int date = t.getDateOfBirth().getDate();
-                int month = t.getDateOfBirth().getMonth();
-                int year = t.getDateOfBirth().getYear();
+                int month = t.getDateOfBirth().getMonth() + 1;
+                int year = t.getDateOfBirth().getYear() + 1900;
                 String address = t.getAddress();
                 String email = t.getEmail();
                 String password = t.getPassWord();
@@ -109,7 +112,7 @@ public class DAOCustomer implements  DAOInterface<Customer>{
                 String statementString = "INSERT  INTO mywebsite.customer(name,numberPhone,sex,address,email,password,dateOfBirth) " +
                         "  VALUES( \"" + name + "\" , " +
                         numberPhone + " , " + sex + " , \"" + address + "\" , \"" +
-                        email + "\" , \"" + password + "\" , " + date + "/" + month +"/" + year +")";
+                        email + "\" , \"" + password + "\" , \"" + year + "/" + date + "/" + month +" \")";
                 statement.executeUpdate(statementString);
             }catch (SQLException e){
                 e.printStackTrace();
